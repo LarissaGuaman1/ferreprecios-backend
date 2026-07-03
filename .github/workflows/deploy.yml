@@ -23,4 +23,5 @@ jobs:
             cd ~/ferreprecios-backend
             git pull https://${{ secrets.GH_TOKEN }}@github.com/LarissaGuaman1/ferreprecios-backend.git main
             docker compose down
+            docker stop $(docker ps -q) 2>/dev/null || true
             docker compose up -d --build
