@@ -22,4 +22,5 @@ jobs:
             fi
             cd ~/ferreprecios-backend
             git pull https://${{ secrets.GH_TOKEN }}@github.com/LarissaGuaman1/ferreprecios-backend.git main
+            docker compose down
             docker compose up -d --build
