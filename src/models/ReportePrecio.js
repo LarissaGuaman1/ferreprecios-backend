@@ -12,6 +12,14 @@ const reportePrecioSchema = new mongoose.Schema({
 
   precio: { type: Number, required: true },
 
+  // Marca del producto (ej: Holcim, Adelca, Pinturas Unidas).
+  // Ayuda al comprador a saber exactamente qué producto se está cotizando.
+  marca: { type: String },
+
+  // Especificaciones adicionales del producto separadas por guión
+  // (ej: "Resistencia 350 PSI - 50 kg - Tipo Portland").
+  caracteristicas: { type: String },
+
   // Se llena cuando conectemos Cloudinary (funcionalidad de reporte).
   // Por ahora puede quedar vacío en los datos de ejemplo.
   fotoUrl: { type: String },

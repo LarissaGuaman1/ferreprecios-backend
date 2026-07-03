@@ -29,6 +29,13 @@ const usuarioSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
+  // 'comprador' = usuario normal que reporta precios.
+  // 'ferreteria' = dueño de ferretería que gestiona su tienda.
+  rol: {
+    type: String,
+    enum: ['comprador', 'ferreteria'],
+    default: 'comprador',
+  },
 }, {
   timestamps: true, // agrega createdAt y updatedAt automáticamente
 });

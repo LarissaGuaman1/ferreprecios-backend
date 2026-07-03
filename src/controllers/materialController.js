@@ -96,6 +96,8 @@ async function obtenerPreciosDeMaterial(req, res) {
       precios: reportes.map((reporte) => ({
         id: reporte._id,
         valor: reporte.precio,
+        marca: reporte.marca || null,
+        caracteristicas: reporte.caracteristicas || null,
         fotoUrl: reporte.fotoUrl,
         confirmaciones: reporte.confirmaciones,
         estado: calcularEstado(reporte),

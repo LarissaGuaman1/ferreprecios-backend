@@ -8,11 +8,11 @@ const PUNTOS_POR_REPORTAR = 10;
 // POST /api/reportes (requiere estar logueado)
 async function crearReporte(req, res) {
   try {
-    const { materialId, ferreteriaId, precio, fotoUrl } = req.body;
+    const { materialId, ferreteriaId, precio, fotoUrl, marca, caracteristicas } = req.body;
 
-    if (!materialId || !ferreteriaId || !precio || !fotoUrl) {
+    if (!materialId || !ferreteriaId || !precio || !fotoUrl || !marca) {
       return res.status(400).json({
-        message: 'material, ferretería, precio y foto son obligatorios',
+        message: 'material, ferretería, precio, foto y marca son obligatorios',
       });
     }
 
@@ -32,6 +32,8 @@ async function crearReporte(req, res) {
       usuario: req.usuarioId,
       precio,
       fotoUrl,
+      marca,
+      caracteristicas: caracteristicas || undefined,
     });
 
     // $inc suma el valor de forma atómica directo en la base de datos,

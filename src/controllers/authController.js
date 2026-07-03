@@ -16,12 +16,13 @@ function formatearUsuario(usuario) {
     email: usuario.email,
     puntos: usuario.puntos,
     fotoUrl: usuario.fotoUrl,
+    rol: usuario.rol,
   };
 }
 
 async function register(req, res) {
   try {
-    const { nombre, email, password } = req.body;
+    const { nombre, email, password, rol } = req.body;
 
     if (!nombre || !email || !password) {
       return res.status(400).json({ message: 'Nombre, correo y contraseña son obligatorios' });
@@ -35,8 +36,9 @@ async function register(req, res) {
     // 10 = "salt rounds": qué tan costoso (lento) es calcular el hash.
     // Más alto = más seguro pero más lento. 10 es el estándar recomendado.
     const passwordHash = await bcrypt.hash(password, 10);
+    const rolValido = rol === 'ferreteria' ? 'ferreteria' : 'comprador';
 
-    const usuario = await Usuario.create({ nombre, email, passwordHash });
+    const usuario = await Usuario.create({ nombre, email, passwordHash, rol: rolValido });
 
     const token = generarToken(usuario._id);
     return res.status(201).json({ token, usuario: formatearUsuario(usuario) });
