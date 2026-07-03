@@ -17,6 +17,9 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
           script: |
+            if [ ! -d ~/ferreprecios-backend ]; then
+              git clone https://${{ secrets.GH_TOKEN }}@github.com/LarissaGuaman1/ferreprecios-backend.git ~/ferreprecios-backend
+            fi
             cd ~/ferreprecios-backend
             git pull https://${{ secrets.GH_TOKEN }}@github.com/LarissaGuaman1/ferreprecios-backend.git main
             docker compose up -d --build
