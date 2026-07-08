@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  ferreprecios:
+    image: ghcr.io/larissaguaman1/backend-ferreprecios:latest
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - CLOUDINARY_NAME=${CLOUDINARY_NAME}
+      - CLOUDINARY_KEY=${CLOUDINARY_KEY}
+      - CLOUDINARY_SECRET=${CLOUDINARY_SECRET}
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+
+        # HTTP
+        - "traefik.http.routers.ferreprecios.rule=Host(`api.ferreprecios.byronrm.com`)"
+        - "traefik.http.routers.ferreprecios.entrypoints=http"
+        - "traefik.http.routers.ferreprecios.middlewares=ferreprecios-https-redirect"
+
+        # Redirección a HTTPS
+        - "traefik.http.middlewares.ferreprecios-https-redirect.redirectscheme.scheme=https"
+
+        # HTTPS
+        - "traefik.http.routers.ferreprecios-secure.rule=Host(`api.ferreprecios.byronrm.com`)"
+        - "traefik.http.routers.ferreprecios-secure.entrypoints=https"
+        - "traefik.http.routers.ferreprecios-secure.tls=true"
+        - "traefik.http.routers.ferreprecios-secure.tls.certresolver=http"
+        - "traefik.http.routers.ferreprecios-secure.service=ferreprecios"
+
+        # Puerto interno del backend Node.js
+        - "traefik.http.services.ferreprecios.loadbalancer.server.port=3000"
+
+        # Red de Traefik
+        - "traefik.docker.network=traefik-public"
+
+networks:
+  traefik-public:
+    external: true
