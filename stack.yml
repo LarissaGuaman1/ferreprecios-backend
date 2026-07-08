@@ -3,6 +3,8 @@ version: '3.8'
 services:
   ferreprecios:
     image: ghcr.io/larissaguaman1/backend-ferreprecios:latest
+    ports:
+      - "8080:3000"
     environment:
       - MONGODB_URI=${MONGODB_URI}
       - JWT_SECRET=${JWT_SECRET}
