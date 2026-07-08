@@ -3,6 +3,25 @@ const Material = require('../models/Material');
 const ReportePrecio = require('../models/ReportePrecio');
 const SECTORES = require('../utils/sectores');
 
+async function geocodificar(direccion) {
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 4000);
+    const q = encodeURIComponent(`${direccion}, Quito, Ecuador`);
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`,
+      { headers: { 'User-Agent': 'FerrePrecios/1.0 (ec.ferreprecios.app)' }, signal: controller.signal },
+    );
+    clearTimeout(timer);
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!Array.isArray(data) || !data.length) return null;
+    return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+  } catch {
+    return null;
+  }
+}
+
 function formatearFerreteria(f) {
   return {
     id: f._id,
@@ -49,6 +68,11 @@ async function crearFerreteria(req, res) {
 
     const ferreteria = await Ferreteria.create({ nombre, direccion, sector, telefono });
 
+    // Geocodificación en background: no bloquea la respuesta
+    geocodificar(direccion).then((ub) => {
+      if (ub) Ferreteria.updateOne({ _id: ferreteria._id }, { $set: { ubicacion: ub } }).catch(() => {});
+    });
+
     return res.status(201).json(formatearFerreteria(ferreteria));
   } catch (error) {
     return res.status(500).json({ message: 'Error al crear la ferretería', detalle: error.message });
@@ -89,6 +113,11 @@ async function guardarMiFerreteria(req, res) {
       { nombre, direccion, sector, telefono, horario, descripcion, dueno: req.usuarioId },
       { new: true, upsert: true, runValidators: true },
     );
+
+    // Re-geocodificar si cambia la dirección
+    geocodificar(direccion).then((ub) => {
+      if (ub) Ferreteria.updateOne({ _id: ferreteria._id }, { $set: { ubicacion: ub } }).catch(() => {});
+    });
 
     return res.json(formatearFerreteria(ferreteria));
   } catch (error) {
