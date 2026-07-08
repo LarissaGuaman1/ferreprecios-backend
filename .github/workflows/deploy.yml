@@ -17,11 +17,11 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
           script: |
-            if [ ! -d ~/ferreprecios-backend ]; then
-              git clone https://${{ secrets.GH_TOKEN }}@github.com/LarissaGuaman1/ferreprecios-backend.git ~/ferreprecios-backend
+            if [ ! -d ~/ferre-precios-backend ]; then
+              git clone https://${{ secrets.GH_TOKEN }}@github.com/LarissaGuaman1/ferre-precios-backend.git ~/ferre-precios-backend
             fi
-            cd ~/ferreprecios-backend
-            git pull https://${{ secrets.GH_TOKEN }}@github.com/LarissaGuaman1/ferreprecios-backend.git main
+            cd ~/ferre-precios-backend
+            git pull https://${{ secrets.GH_TOKEN }}@github.com/LarissaGuaman1/ferre-precios-backend.git main
             docker compose down
             docker stop $(docker ps -q) 2>/dev/null || true
             docker compose up -d --build
