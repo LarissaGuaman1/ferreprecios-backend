@@ -21,7 +21,7 @@ services:
         - "traefik.enable=true"
 
         # HTTP
-        - "traefik.http.routers.mongo-express.rule=Host(`mongoferreprecios.byronrm.com`)"
+        - "traefik.http.routers.mongo-express.rule=Host(`mongo.ferreprecios.byronrm.com`)"
         - "traefik.http.routers.mongo-express.entrypoints=http"
         - "traefik.http.routers.mongo-express.middlewares=mongo-https-redirect"
 
@@ -29,7 +29,7 @@ services:
         - "traefik.http.middlewares.mongo-https-redirect.redirectscheme.scheme=https"
 
         # HTTPS
-        - "traefik.http.routers.mongo-express-secure.rule=Host(`mongoferreprecios.byronrm.com`)"
+        - "traefik.http.routers.mongo-express-secure.rule=Host(`mongo.ferreprecios.byronrm.com`)"
         - "traefik.http.routers.mongo-express-secure.entrypoints=https"
         - "traefik.http.routers.mongo-express-secure.tls=true"
         - "traefik.http.routers.mongo-express-secure.tls.certresolver=http"
