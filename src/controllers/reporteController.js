@@ -53,4 +53,20 @@ async function crearReporte(req, res) {
   }
 }
 
-module.exports = { crearReporte };
+// DELETE /api/reportes/:id (requiere estar logueado)
+async function eliminarReporte(req, res) {
+  try {
+    const reporte = await ReportePrecio.findById(req.params.id);
+    if (!reporte) return res.status(404).json({ message: 'Reporte no encontrado' });
+    if (reporte.usuario.toString() !== req.usuarioId) {
+      return res.status(403).json({ message: 'No puedes eliminar este reporte' });
+    }
+    await reporte.deleteOne();
+    await Usuario.findByIdAndUpdate(req.usuarioId, { $inc: { puntos: -PUNTOS_POR_REPORTAR } });
+    return res.json({ message: 'Reporte eliminado' });
+  } catch (error) {
+    return res.status(500).json({ message: 'Error al eliminar el reporte', detalle: error.message });
+  }
+}
+
+module.exports = { crearReporte, eliminarReporte };

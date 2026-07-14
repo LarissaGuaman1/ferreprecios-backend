@@ -54,4 +54,23 @@ async function actualizarFotoPerfil(req, res) {
   }
 }
 
-module.exports = { obtenerPerfil, actualizarFotoPerfil };
+// PUT /api/usuarios/me/nombre (requiere estar logueado)
+async function actualizarNombre(req, res) {
+  try {
+    const { nombre } = req.body;
+    if (!nombre || nombre.trim().length < 2) {
+      return res.status(400).json({ message: 'El nombre debe tener al menos 2 caracteres' });
+    }
+    const usuario = await Usuario.findByIdAndUpdate(
+      req.usuarioId,
+      { nombre: nombre.trim() },
+      { new: true },
+    );
+    if (!usuario) return res.status(404).json({ message: 'Usuario no encontrado' });
+    return res.json({ nombre: usuario.nombre });
+  } catch (error) {
+    return res.status(500).json({ message: 'Error al actualizar el nombre', detalle: error.message });
+  }
+}
+
+module.exports = { obtenerPerfil, actualizarFotoPerfil, actualizarNombre };
